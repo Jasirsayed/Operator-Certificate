@@ -1,0 +1,275 @@
+!DOCTYPE html
+html lang=en
+head
+  meta charset=UTF-8 
+  titleCertificate Generatortitle
+  style
+    body {
+      font-family Arial, sans-serif;
+      display flex;
+      gap 20px;
+      padding 20px;
+      background #f3f3f3;
+    }
+
+    .form-container {
+      width 30%;
+      background #fff;
+      padding 15px;
+      border-radius 6px;
+      box-shadow 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .form-container h2 {
+      margin-top 0;
+    }
+
+    .form-group {
+      margin-bottom 10px;
+    }
+
+    .form-group label {
+      display block;
+      font-size 0.9rem;
+      margin-bottom 3px;
+    }
+
+    .form-group input {
+      width 100%;
+      padding 6px;
+      font-size 0.9rem;
+    }
+
+    .certificate-container {
+      width 70%;
+      display flex;
+      justify-content center;
+      align-items center;
+    }
+
+    #certificate {
+      width 800px;
+      height 565px;
+      background #ffffff;
+      border 2px solid #000;
+      padding 30px 40px;
+      box-sizing border-box;
+      position relative;
+    }
+
+    #certificate h1 {
+      text-align center;
+      margin 0 0 20px;
+      text-transform uppercase;
+      letter-spacing 2px;
+    }
+
+    .center-text {
+      text-align center;
+      margin 10px 0;
+    }
+
+    .field-label {
+      font-weight bold;
+    }
+
+    .footer {
+      position absolute;
+      bottom 20px;
+      left 40px;
+      right 40px;
+      font-size 0.8rem;
+    }
+
+    .footer-top {
+      border-top 1px solid #000;
+      padding-top 5px;
+      margin-top 10px;
+    }
+
+    .signatures {
+      display flex;
+      justify-content space-between;
+      margin-top 25px;
+    }
+
+    .signature-block {
+      text-align center;
+      width 45%;
+      font-size 0.85rem;
+    }
+
+    .signature-line {
+      margin-top 40px;
+      border-top 1px solid #000;
+    }
+
+    .tuv-tagline {
+      text-align center;
+      margin-top 10px;
+      font-weight bold;
+      font-size 0.9rem;
+    }
+
+    button {
+      margin-top 10px;
+      padding 8px 12px;
+      cursor pointer;
+    }
+  style
+head
+body
+  !-- LEFT FORM --
+  div class=form-container
+    h2Create Certificateh2
+
+    div class=form-group
+      labelNamelabel
+      input id=nameInput type=text value=Babar Ali Ghulam Abbas 
+    div
+
+    div class=form-group
+      labelCertificate Nolabel
+      input id=certNoInput type=text value=TRO-OP-26-0017 
+    div
+
+    div class=form-group
+      labelId No.label
+      input id=idNoInput type=text value=119228131 
+    div
+
+    div class=form-group
+      labelCompanylabel
+      input id=companyInput type=text value=Three Star Galaxy International LLC 
+    div
+
+    div class=form-group
+      labelAddresslabel
+      input id=addressInput type=text value=Sultanate of Oman 
+    div
+
+    div class=form-group
+      labelQualificationlabel
+      input id=qualificationInput type=text value=Safe Backhoe Loader Operation Assessment 
+    div
+
+    div class=form-group
+      labelVenuelabel
+      input id=venueInput type=text value=Ghala - Sultanate of Oman 
+    div
+
+    div class=form-group
+      labelAssessment datelabel
+      input id=assessmentDateInput type=text value=14th January 2026 
+    div
+
+    div class=form-group
+      labelValid untillabel
+      input id=validUntilInput type=text value=13th January 2027 
+    div
+
+    button onclick=updateCertificate()Update Previewbutton
+    button onclick=downloadPDF()Download PDFbutton
+  div
+
+  !-- RIGHT CERTIFICATE PREVIEW --
+  div class=certificate-container
+    div id=certificate
+      h1CERTIFICATEh1
+
+      p class=center-textThis is to certify thatp
+
+      pspan class=field-labelNamespan span id=nameFieldBabar Ali Ghulam Abbasspanp
+      pspan class=field-labelCertificate Nospan span id=certNoFieldTRO-OP-26-0017spanp
+      pspan class=field-labelId No.span span id=idNoField119228131spanp
+      pspan class=field-labelCompanyspan span id=companyFieldThree Star Galaxy International LLCspanp
+      pspan class=field-labelAddressspan span id=addressFieldSultanate of Omanspanp
+
+      p class=center-textHas Attended and successfully completedp
+
+      pspan class=field-labelQualificationspan span id=qualificationFieldSafe Backhoe Loader Operation Assessmentspanp
+      pspan class=field-labelVenuespan span id=venueFieldGhala - Sultanate of Omanspanp
+      pspan class=field-labelAssessment datespan span id=assessmentDateField14th January 2026spanp
+      pspan class=field-labelValid untilspan span id=validUntilField13th January 2027spanp
+
+      p class=center-text style=margin-top 20px; font-size 0.9rem;
+        Note This assessment certificate is not a driving license.
+      p
+
+      div class=signatures
+        div class=signature-block
+          div class=signature-linediv
+          divR. MuralibrMurali RudrabrAssessordiv
+        div
+        div class=signature-block
+          div class=signature-linediv
+          divSudheep KPbrAsst Managerdiv
+        div
+      div
+
+      div class=footer
+        div class=footer-top
+          TÜV Rheinland LLCbr
+          P.O. Box 1918, Postal Code 133,br
+          Muscat, Sultanate of Omanbr
+          Lifting@om.tuv.combr
+          +968 2448 7851br
+          MS-0044958
+        div
+        p style=margin-top 8px; font-size 0.7rem;
+           TÜV, TUEV and TUV are registered trademarks. Utilisation and application requires prior approval.
+        p
+        div class=tuv-tagline
+          TÜVRheinland® – Precisely Right.
+        div
+      div
+    div
+  div
+
+  !-- JS LIBS --
+  script src=httpscdnjs.cloudflare.comajaxlibshtml2canvas1.4.1html2canvas.min.jsscript
+  script src=httpscdnjs.cloudflare.comajaxlibsjspdf2.5.1jspdf.umd.min.jsscript
+
+  script
+    function updateCertificate() {
+      document.getElementById('nameField').innerText =
+        document.getElementById('nameInput').value;
+      document.getElementById('certNoField').innerText =
+        document.getElementById('certNoInput').value;
+      document.getElementById('idNoField').innerText =
+        document.getElementById('idNoInput').value;
+      document.getElementById('companyField').innerText =
+        document.getElementById('companyInput').value;
+      document.getElementById('addressField').innerText =
+        document.getElementById('addressInput').value;
+      document.getElementById('qualificationField').innerText =
+        document.getElementById('qualificationInput').value;
+      document.getElementById('venueField').innerText =
+        document.getElementById('venueInput').value;
+      document.getElementById('assessmentDateField').innerText =
+        document.getElementById('assessmentDateInput').value;
+      document.getElementById('validUntilField').innerText =
+        document.getElementById('validUntilInput').value;
+    }
+
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const certificate = document.getElementById('certificate');
+
+      const canvas = await html2canvas(certificate, { scale 2 });
+      const imgData = canvas.toDataURL('imagepng');
+
+      const pdf = new jsPDF('l', 'pt', 'a4');  landscape A4
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth = pageWidth;
+      const imgHeight = canvas.height  (imgWidth  canvas.width);
+
+      const y = (pageHeight - imgHeight)  2;
+      pdf.addImage(imgData, 'PNG', 0, y, imgWidth, imgHeight);
+      pdf.save('certificate.pdf');
+    }
+  script
+body
+html
