@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Operator Assessment Certificate Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<!-- jsPDF + QRCode libraries (loaded from CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --tuv-blue: #0e5aa7;
+    --tuv-blue-dark: #003b73;
+    --ink: #1c2530;
+    --muted: #6b7785;
+    --line: #e3e8ee;
+    --bg: #eef2f6;
+    --panel: #ffffff;
+    --accent: #1063b5;
+    --shadow: 0 10px 40px rgba(16, 49, 89, 0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Archivo', system-ui, sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #dbe8f6 0%, transparent 60%),
+      var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  /* ---------- Header ---------- */
+  header.topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand .mark {
+    width: 40px; height: 40px; display: grid; place-items: center;
+  }
+  .brand .mark svg { width: 40px; height: 40px; }
+  .brand h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 20px; letter-spacing: -0.01em;
+    color: var(--tuv-blue-dark);
+  }
+  .brand p { font-size: 12.5px; color: var(--muted); margin-top: 1px; }
+
+  /* ---------- Layout ---------- */
+  .wrap {
+    max-width: 1380px; margin: 0 auto; padding: 26px;
+    display: grid; grid-template-columns: 420px 1fr; gap: 26px;
+    align-items: start;
+  }
+  @media (max-width: 1080px) {
+    .wrap { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Form panel ---------- */
+  .panel {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 16px; box-shadow: var(--shadow);
+  }
+  .form-panel { position: sticky; top: 96px; overflow: hidden; }
+  @media (max-width: 1080px) { .form-panel { position: static; } }
+  .panel-head {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #f6f9fc, #fff);
+  }
+  .panel-head h2 {
+    font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600;
+    color: var(--tuv-blue-dark);
+  }
+  .panel-head p { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+  .form-body { padding: 18px 22px 22px; max-height: calc(100vh - 230px); overflow-y: auto; }
+  .form-body::-webkit-scrollbar { width: 8px; }
+  .form-body::-webkit-scrollbar-thumb { background: #cfd9e3; border-radius: 8px; }
+
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 18px 0 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-label:first-child { margin-top: 0; }
+  .section-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .field { margin-bottom: 13px; }
+  .field label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: #44505d; margin-bottom: 5px;
+  }
+  .field input[type="text"], .field input[type="date"] {
+    width: 100%; padding: 9px 11px; font-size: 13.5px;
+    font-family: 'Archivo', sans-serif; color: var(--ink);
+    border: 1px solid #d6dee6; border-radius: 9px; background: #fbfcfe;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .field input:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(16, 99, 181, 0.12); background: #fff;
+  }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+
+  .file-drop {
+    border: 1.5px dashed #c2cedb; border-radius: 11px; padding: 16px;
+    text-align: center; cursor: pointer; background: #f8fafc;
+    transition: all .15s; position: relative;
+  }
+  .file-drop:hover { border-color: var(--accent); background: #f1f6fc; }
+  .file-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .file-drop .fd-icon { color: var(--accent); margin-bottom: 6px; }
+  .file-drop .fd-main { font-size: 13px; font-weight: 600; color: #3a4654; }
+  .file-drop .fd-sub { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .photo-thumb {
+    width: 56px; height: 62px; object-fit: cover; border-radius: 6px;
+    border: 1px solid var(--line); display: none; margin: 8px auto 0;
+  }
+
+  .actions {
+    padding: 16px 22px; border-top: 1px solid var(--line);
+    display: flex; gap: 10px; background: #fafcfe;
+  }
+  .btn {
+    flex: 1; padding: 11px 14px; font-size: 13.5px; font-weight: 600;
+    font-family: 'Archivo', sans-serif; border-radius: 10px; cursor: pointer;
+    border: 1px solid transparent; transition: transform .08s, box-shadow .15s, background .15s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary {
+    background: linear-gradient(180deg, #1370c9, var(--tuv-blue));
+    color: #fff; box-shadow: 0 4px 14px rgba(14, 90, 167, 0.32);
+  }
+  .btn-primary:hover { box-shadow: 0 6px 20px rgba(14, 90, 167, 0.42); }
+  .btn-ghost {
+    background: #fff; color: var(--tuv-blue-dark); border-color: #cdd8e3;
+  }
+  .btn-ghost:hover { background: #f3f7fb; }
+
+  /* ---------- Preview panel ---------- */
+  .preview-panel { padding: 22px; }
+  .preview-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
+  }
+  .preview-head h2 {
+    font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600;
+    color: var(--tuv-blue-dark);
+  }
+  .zoom-note { font-size: 12px; color: var(--muted); }
+  .stage {
+    width: 100%; display: flex; justify-content: center;
+    background:
+      repeating-linear-gradient(45deg, #e8edf2 0 12px, #eef2f6 12px 24px);
+    border-radius: 12px; padding: 24px; overflow: auto;
+  }
+  /* The certificate canvas keeps the A4 aspect ratio (595.32 x 841.92) */
+  #certCanvas {
+    width: 100%; max-width: 595px; height: auto;
+    box-shadow: 0 14px 50px rgba(20, 45, 80, 0.22);
+    border-radius: 3px; background: #fff;
+  }
+
+  .hint {
+    margin-top: 14px; font-size: 12px; color: var(--muted);
+    display: flex; gap: 8px; align-items: flex-start;
+    background: #f4f8fc; border: 1px solid #e0eaf4; border-radius: 10px; padding: 10px 12px;
+  }
+  .hint svg { flex-shrink: 0; color: var(--accent); margin-top: 1px; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #10324f; color: #fff; padding: 12px 20px; border-radius: 11px;
+    font-size: 13.5px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    opacity: 0; pointer-events: none; transition: all .3s; z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  #qrHolder { display: none; }
+  footer.sitefoot {
+    text-align: center; font-size: 12px; color: var(--muted);
+    padding: 8px 20px 28px;
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="mark">
+      <svg viewBox="0 0 64 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M32 4 L60 46 L40 46 L32 30 L24 46 L4 46 Z" fill="#0e5aa7"/>
+        <path d="M30 34 C36 30 44 30 50 36 L46 44 C42 40 36 40 32 42 Z" fill="#0e5aa7"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Operator Assessment Certificate</h1>
+      <p>Generate &amp; download certificates as PDF</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- ============ FORM ============ -->
+  <section class="panel form-panel">
+    <div class="panel-head">
+      <h2>Certificate Details</h2>
+      <p>Fill in the fields — the preview updates live.</p>
+    </div>
+    <div class="form-body">
+
+      <div class="section-label">Trainee</div>
+      <div class="field">
+        <label for="f_name">Full Name</label>
+        <input type="text" id="f_name" value="Babar Ali Ghulam Abbas" />
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="f_certno">Certificate No</label>
+          <input type="text" id="f_certno" value="TRO-OP-26-0017" />
+        </div>
+        <div class="field">
+          <label for="f_idno">ID No.</label>
+          <input type="text" id="f_idno" value="119228131" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="f_company">Company</label>
+        <input type="text" id="f_company" value="Three Star Galaxy International LLC" />
+      </div>
+      <div class="field">
+        <label for="f_address">Address</label>
+        <input type="text" id="f_address" value="Sultanate of Oman" />
+      </div>
+
+      <div class="field">
+        <label>Trainee Photo</label>
+        <div class="file-drop" id="photoDrop">
+          <input type="file" id="f_photo" accept="image/*" />
+          <div class="fd-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          </div>
+          <div class="fd-main">Click to upload photo</div>
+          <div class="fd-sub">Passport-style portrait works best (PNG/JPG)</div>
+          <img id="photoThumb" class="photo-thumb" alt="preview" />
+        </div>
+      </div>
+
+      <div class="section-label">Assessment</div>
+      <div class="field">
+        <label for="f_qual">Qualification</label>
+        <input type="text" id="f_qual" value="Safe Backhoe Loader Operation Assessment" />
+      </div>
+      <div class="field">
+        <label for="f_venue">Venue</label>
+        <input type="text" id="f_venue" value="Ghala – Sultanate of Oman" />
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="f_adate">Assessment Date</label>
+          <input type="date" id="f_adate" value="2026-01-14" />
+        </div>
+        <div class="field">
+          <label for="f_vdate">Valid Until</label>
+          <input type="date" id="f_vdate" value="2027-01-13" />
+        </div>
+      </div>
+
+      <div class="section-label">Signatories &amp; QR</div>
+      <div class="row2">
+        <div class="field">
+          <label for="f_assessor">Assessor Name</label>
+          <input type="text" id="f_assessor" value="Murali Rudra" />
+        </div>
+        <div class="field">
+          <label for="f_manager">Asst Manager</label>
+          <input type="text" id="f_manager" value="Sudheep KP" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="f_qrdata">QR Code Content (text or URL)</label>
+        <input type="text" id="f_qrdata" value="TRO-OP-26-0017" />
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="btnReset" type="button">Reset</button>
+      <button class="btn btn-primary" id="btnPdf" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+        Download PDF
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ PREVIEW ============ -->
+  <section class="panel preview-panel">
+    <div class="preview-head">
+      <h2>Live Preview</h2>
+      <span class="zoom-note">A4 · 595 × 842 pt · TÜV Rheinland template</span>
+    </div>
+    <div class="stage">
+      <canvas id="certCanvas" width="1190" height="1684"></canvas>
+    </div>
+    <div class="hint">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <span>The downloaded PDF is vector-text on the original template image, so it stays crisp at any zoom. The QR code regenerates automatically from the field above.</span>
+    </div>
+  </section>
+</div>
+
+<footer class="sitefoot">Certificate template © TÜV Rheinland. This tool reproduces the official layout for authorised certificate issuance.</footer>
+
+<div id="qrHolder"></div>
+<div class="toast" id="toast"></div>
+
+<script src="certificate.js"></script>
+</body>
+</html>
