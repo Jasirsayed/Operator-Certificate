@@ -235,7 +235,7 @@ function drawCanvas(){
   if (assets.stamp) {
     const ss = 74;                 // stamp diameter in pt (smaller)
     const stx = 432 - ss/2;        // centre x ~432 (right side, above QR)
-    const sty = 548;               // top y (above the QR which starts ~618)
+    const sty = 536;               // top y (above the QR which starts ~618)
     ctx.save();
     ctx.globalAlpha = 0.9;
     ctx.drawImage(assets.stamp, stx*s, sty*s, ss*s, ss*s);
