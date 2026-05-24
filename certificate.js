@@ -235,7 +235,7 @@ function drawCanvas(){
   if (assets.stamp) {
     const ss = 74;                 // stamp diameter in pt (smaller)
     const stx = 432 - ss/2;        // centre x ~432 (right side, above QR)
-    const sty = 536;               // top y (above the QR which starts ~618)
+    const sty = 526;               // top y (above the QR which starts ~618)
     ctx.save();
     ctx.globalAlpha = 0.9;
     ctx.drawImage(assets.stamp, stx*s, sty*s, ss*s, ss*s);
@@ -414,7 +414,7 @@ async function exportPDF(){
 
   // TÜV stamp overlay (drawn last, on top) — smaller, upper-right above QR
   if (assets.stamp){
-    const ss=74, stx=432-ss/2, sty=548;
+    const ss=74, stx=432-ss/2, sty=526;
     const tc=document.createElement('canvas'); tc.width=assets.stamp.width; tc.height=assets.stamp.height;
     tc.getContext('2d').drawImage(assets.stamp,0,0);
     if (doc.setGState) { try { doc.setGState(new doc.GState({opacity:0.9})); } catch(e){} }
