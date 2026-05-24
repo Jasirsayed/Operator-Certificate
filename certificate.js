@@ -414,7 +414,7 @@ async function exportPDF(){
 
   // TÜV stamp overlay (drawn last, on top) — smaller, upper-right above QR
   if (assets.stamp){
-    const ss=74, stx=432-ss/2, sty=542;
+    const ss=74, stx=432-ss/2, sty=538;
     const tc=document.createElement('canvas'); tc.width=assets.stamp.width; tc.height=assets.stamp.height;
     tc.getContext('2d').drawImage(assets.stamp,0,0);
     if (doc.setGState) { try { doc.setGState(new doc.GState({opacity:0.9})); } catch(e){} }
